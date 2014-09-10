@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="MasterBuilder is a tool for raw Mastercoin transaction creation based on building blocks which can easily be spent via Master Core, a fork of Bitcoin Core.">
+    <meta name="keywords" content="bitcoin, mastercoin, raw transaction, master protocol, blockchain, unspent outputs, mastercoin explorer, bitcoin core">
+    <meta name="author" content="dexX7">
+    <title>MasterBuilder | Create raw Mastercoin transactions - bitwatch.co</title>
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="canonical" href="http://builder.bitwatch.co">    
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="app.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container" ng-app="MasterBuilder" ng-controller="CreateTxController" data-ng-init="init()">
+      <form name="createTxForm" class="form" novalidate>
+        <fieldset>
+          <legend>Create a new Master transaction</legend>
+          <div class="form-section">
+            <div class="form-group" ng-repeat="field in fields">
+              <ng-form name="innerRow">
+                <div class="row">
+                  <div class="col-xs-4">
+                    <label class="sr-only" for="field_type">Field type</label>
+                    <select class="form-control" name="field_type" ng-model="field.field_type" ng-change="replaceField($index)">
+                      <option value="version">Transaction Version</option>
+                      <option value="type">Transaction Type</option>
+                      <option value="currency_identifier">Currency Identifier</option>
+                      <option value="number_of_coins">Number of Coins</option>
+                      <option value="number_of_blocks">Number of Blocks</option>
+                      <option value="action">Action</option>
+                      <option value="ecosystem">Ecosystem</option>
+                      <option value="property_type">Property Type</option>
+                      <option value="text">Null-terminated String</option>
+                      <option value="timestamp">Timestamp</option>
+                      <option value="percentage">Percentage</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="input-group" ng-class="innerRow.field_value.$invalid && ((innerRow.field_value.$error.max || innerRow.field_value.$error.maxlength || innerRow.field_value.$error.min || innerRow.field_value.$error.minlength || innerRow.field_value.$error.number || innerRow.field_value.$error.pattern) ? 'has-error' : 'has-warning')">
+                      <span class="input-group-addon">Value</span>
+                      <input class="form-control" name="field_value" ng-model="field.field_value" type="{{ field.type }}" placeholder="{{ field.placeholder }}" ng-trim="false" ng-required="field.required" ng-pattern="field.pattern" ng-minlength="{{ field.minlength }}" ng-maxlength="{{ field.maxlength }}" min="{{ field.min }}" max="{{ field.max }}">
+                    </div>
+                  </div>
+                  <div class="col-xs-2 help-inline" ng-show="$index < 1">
+                    <button class="btn btn-default" type="button" ng-click="addField()">+</button>
+                    <button class="btn btn-default" type="button" ng-click="removeField()" ng-disabled="fields.length < 2">–</button>
+                  </div>
+                </div>
+              </ng-form>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-group">
+              <div class="row">
+                <div class="col-xs-4">
+                  <label class="sr-only" for="field_sender">Field type</label>
+                  <input class="form-control readonly-input" name="field_sender" type="text" value="Sender" readonly>
+                </div>
+                <div class="col-xs-6">
+                  <div class="input-group" ng-class="createTxForm.sender.$invalid && (createTxForm.sender.$error.maxlength ? 'has-error' : 'has-warning')">
+                    <span class="input-group-addon">Value</span>
+                    <input class="form-control" name="sender" type="text" placeholder="mvayzbj425X55kRLLPQiuCXWUED6LMP65C" ng-model="sender" ng-required="true" ng-minlength="28" ng-maxlength="35">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-xs-4">
+                  <label class="sr-only" for="field_reference">Field type</label>
+                  <input class="form-control readonly-input" name="field_reference" type="text" value="Reference" readonly>
+                </div>
+                <div class="col-xs-6">
+                  <div class="input-group" ng-class="createTxForm.reference.$invalid && (createTxForm.reference.$error.maxlength ? 'has-error' : 'has-warning')">
+                    <span class="input-group-addon">Value</span>
+                    <input class="form-control" name="reference" type="text" placeholder="n4EmA9R4VmxLnxu9G8yZMDxvBBha8bUtEQ" ng-model="reference" ng-required="false" ng-minlength="28" ng-maxlength="35">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-group">
+              <div class="form-actions">
+                <button class="btn btn-primary btn-wide-34" type="button" ng-click="submitForm()">Store in URL</button>
+                <button class="btn btn-default btn-wide" type="button" ng-click="clearForm()">Clear</button>
+                <button class="btn btn-default btn-wide" type="button" ng-click="resetForm()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      <pre class="command-box">bitcoin-cli sendrawtx_MP "{{ sender }}" "{{ reference }}" "{{ getRawTx() }}"</pre>
+      <p>Examples:</p>
+      <ul>
+        <li><a href="?version=0&type=0&currency_identifier=1&number_of_coins=100000000&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C&reference=n4EmA9R4VmxLnxu9G8yZMDxvBBha8bUtEQ">Tx 0: Transfer Coins (Simple Send)</a></li>
+        <li><a href="?version=0&type=3&currency_identifier=6&number_of_coins=100000000000&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 3: Send To Owners</a></li>
+        <li><a href="?version=1&type=20&currency_identifier=1&number_of_coins=150000000&number_of_coins=100000000000&number_of_blocks=10&number_of_coins=10000000&action=1&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 20: Sell Tokens for Bitcoins</a></li>
+        <li><a href="?version=0&type=21&currency_identifier=1&number_of_coins=250000000&currency_identifier=3&number_of_coins=5000000000&action=1&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 21: Sell Tokens for Tokens</a></li>
+        <li><a href="?version=0&type=22&currency_identifier=1&number_of_coins=130000000&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C&reference=n4EmA9R4VmxLnxu9G8yZMDxvBBha8bUtEQ">Tx 22: Purchase Tokens with Bitcoins</a></li>
+        <li><a href="?version=0&type=50&ecosystem=1&property_type=1&currency_identifier=0&text=436f6d70616e69657300&text=426974636f696e204d696e696e6700&text=5175616e74756d204d696e657200&text=74696e7975726c2e636f6d2f6b77656a676f696700&text=00&number_of_coins=1000000&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 50: Create Property</a></li>
+        <li><a href="?version=1&type=51&ecosystem=1&property_type=1&currency_identifier=0&text=436f6d70616e69657300&text=426974636f696e204d696e696e6700&text=5175616e74756d204d696e657200&text=74696e7975726c2e636f6d2f6b77656a676f696700&text=00&currency_identifier=1&number_of_coins=100&timestamp=7731414000&percentage=10&percentage=12&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 51: Create Crowdsale</a></li>
+        <li><a href="?version=0&type=52&ecosystem=1&currency_identifier=8&number_of_coins=300000000&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 52: Promote Property</a></li>
+        <li><a href="?version=0&type=53&currency_identifier=9&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 53: Close Crowdsale</a></li>
+        <li><a href="?version=0&type=54&ecosystem=1&property_type=1&currency_identifier=0&text=436f6d70616e69657300&text=426974636f696e204d696e696e6700&text=5175616e74756d204d696e657200&text=74696e7975726c2e636f6d2f6b77656a676f696700&text=00&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 54: Create Managed Property</a></li>
+        <li><a href="?version=0&type=55&currency_identifier=8&number_of_coins=1000&text=4669727374204d696c6573746f6e6520526561636865642100&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 55: Grant Tokens for Managed Property</a></li>
+        <li><a href="?version=0&type=56&currency_identifier=8&number_of_coins=1000&text=526564656d7074696f6e206f6620746f6b656e7320666f7220426f622c205468616e6b7320426f622100&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C">Tx 56: Revoke Tokens of Managed Property</a></li>
+      </ul>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="lib/biginteger.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

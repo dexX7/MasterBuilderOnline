@@ -1,0 +1,51 @@
+html {
+  overflow-y: scroll;
+}
+
+.container {
+  margin-top: 28px;
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom:8px;
+}
+
+.form-control::-moz-placeholder {
+  color: #bcbcbc;
+  opacity: 1;
+}
+
+.form-control:-ms-input-placeholder {
+  color: #bcbcbc;
+}
+
+.form-control::-webkit-input-placeholder {
+  color: #bcbcbc;
+}
+
+.form-section {
+  margin-bottom: 28px;
+}
+
+.btn-wide {
+  padding: 6px 32px;
+}
+
+.btn-wide-34 {
+  padding: 6px 34px;
+}
+
+.readonly-input[readonly] {
+  cursor: auto;
+  background-color: #fff;
+  padding-left: 16px;
+}
+
+.command-box {
+  font-size: 14px;
+  margin-top: 16px;
+  margin-bottom: 56px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
