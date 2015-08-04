@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="MasterBuilder is a tool for raw Mastercoin transaction creation based on building blocks which can easily be spent via Master Core, a fork of Bitcoin Core.">
-    <meta name="keywords" content="bitcoin, mastercoin, raw transaction, master protocol, blockchain, unspent outputs, mastercoin explorer, bitcoin core">
+    <meta name="description" content="MasterBuilder is a tool for easy creation of raw Mastercoin/Omni Layer transaction with Omni Core, a fork of Bitcoin Core.">
+    <meta name="keywords" content="bitcoin, mastercoin, raw transaction, master protocol, omni layer, omni core, blockchain, unspent outputs, mastercoin explorer, bitcoin core">
     <meta name="author" content="dexX7">
-    <title>MasterBuilder | Create raw Mastercoin transactions - bitwatch.co</title>
+    <title>MasterBuilder | Create raw Mastercoin/Omni Layer transactions - bitwatch.co</title>
     <link rel="shortcut icon" href="favicon.png">
     <link rel="canonical" href="http://builder.bitwatch.co">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -23,7 +23,7 @@
     <div class="container" ng-app="MasterBuilder" ng-controller="CreateTxController" data-ng-init="init()">
       <form name="createTxForm" class="form" novalidate>
         <fieldset>
-          <legend>Create a new Master transaction (<a href="http://imgur.com/a/Qza0A" target="_blank" title="How to use Master Builder with Master Core QT or CLI">instructions</a>)</legend>
+          <legend>Create a new Omni Protocol transaction (<a href="http://imgur.com/a/Qza0A" target="_blank" title="How to use Master Builder with Omni Core QT or CLI">instructions</a>)</legend>
           <div class="form-section">
             <div class="form-group" ng-repeat="field in fields">
               <ng-form name="innerRow">
@@ -99,7 +99,7 @@
           </div>
         </fieldset>
       </form>
-      <pre class="command-box">bitcoin-cli sendrawtx_MP "{{ sender }}" "{{ getRawTx() }}" "{{ reference }}"</pre>
+      <pre class="command-box">omnicore-cli omni_sendrawtx "{{ sender }}" "{{ getRawTx() }}" "{{ reference }}"</pre>
       <p>Examples:</p>
       <ul>
         <li><a href="?version=0&type=0&currency_identifier=1&number_of_coins=100000000&sender=mvayzbj425X55kRLLPQiuCXWUED6LMP65C&reference=n4EmA9R4VmxLnxu9G8yZMDxvBBha8bUtEQ">Tx 0: Transfer Coins (Simple Send)</a></li>
