@@ -179,9 +179,9 @@ angular.module('MasterBuilder', [])
     return Field;
   })
 
-  .controller('CreateTxController', ['$scope', 'Parser', 'Field', 'availableFields', 
+  .controller('CreateTxController', ['$scope', 'Parser', 'Field', 'availableFields',
     function($scope, Parser, Field, availableFields) {
-    
+
     $scope.fields = [];
     $scope.sender = '';
     $scope.reference = '';
@@ -207,6 +207,8 @@ angular.module('MasterBuilder', [])
     };
 
     $scope.addField = function() {
+      ga('send', 'event', 'button', 'click', 'add-field');
+
       var type = availableFields[($scope.fields.length % availableFields.length)];
       var field = $scope.createField(type, '');
 
@@ -214,6 +216,8 @@ angular.module('MasterBuilder', [])
     };
 
     $scope.removeField = function() {
+      ga('send', 'event', 'button', 'click', 'remove-field');
+
       $scope.fields.pop();
     };
 
@@ -264,11 +268,11 @@ angular.module('MasterBuilder', [])
       if ($scope.reference.length > 27) {
         query += '&reference=' + $scope.reference;
       }
-      
+
       query = query.replace(/NaN/gi, '');
       query = query.replace(/null/gi, '');
       query = query.replace(/undefined/gi, '');
-      
+
       return query;
     };
 
@@ -277,6 +281,8 @@ angular.module('MasterBuilder', [])
     };
 
     $scope.submitForm = function() {
+      ga('send', 'event', 'button', 'click', 'store-in-url');
+
       var query = $scope.buildQuery();
       var full = window.location.origin + window.location.pathname + query;
 
